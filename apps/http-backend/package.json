@@ -9,12 +9,14 @@
     "dev": "tsx watch src/index.ts"
   },
   "dependencies": {
-    "@types/jsonwebtoken": "^9.0.9",
-    "express": "^4.21.2",
-    "jsonwebtoken": "^9.0.2",
     "@slates/backend-common": "workspace:*",
-    "@slates/common": "workspace:*"
-
+    "@slates/common": "workspace:*",
+    "@slates/db": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.9",
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +24,8 @@
   "description": "",
   "devDependencies": {
     "@slates/typescript-config": "workspace:*",
+    "@types/bcrypt": "^5.0.2",
+    "@types/dotenv": "^8.2.3",
     "@types/express": "^5.0.0",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"

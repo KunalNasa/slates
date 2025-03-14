@@ -1,7 +1,7 @@
 // backend/src/types/req.d.ts
 export interface requestUser{
     _id : string,
-    // userName : string,
+    username: string,
     // fullName : string,
     // gender : string,
     email : string,

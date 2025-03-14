@@ -1,0 +1,25 @@
+{
+  "name": "@slates/db",
+  "exports" : {
+    "./client": "./src/index.ts"
+  },
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "prisma migrate deploy && tsc --build",
+    "generate": "prisma generate",
+    "migrate": "prisma migrate dev",
+    "postinstall": "prisma generate"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@slates/typescript-config": "workspace:*",
+    "prisma": "^6.5.0"
+  },
+  "dependencies": {
+    "@prisma/client": "6.5.0"
+  }
+}
