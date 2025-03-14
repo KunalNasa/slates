@@ -1,0 +1,3 @@
+{
+    "extends" : "@slates/typescript-config/base.json",
+}

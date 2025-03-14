@@ -1,0 +1,29 @@
+{
+  "name": "http-backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "tsx src/index.ts",
+    "dev": "tsx watch src/index.ts"
+  },
+  "dependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "@slates/backend-common": "workspace:*",
+    "@slates/common": "workspace:*"
+
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@slates/typescript-config": "workspace:*",
+    "@types/express": "^5.0.0",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}
