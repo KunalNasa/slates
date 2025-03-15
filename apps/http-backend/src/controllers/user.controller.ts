@@ -47,3 +47,53 @@ export async function createRoom(req : Request, res: Response) : Promise<any> {
     }
     
 }
+
+export async function fetchChats(req : Request, res: Response) : Promise<any> {
+    try {
+        const roomId = Number(req.params.roomId);
+        const messages = await client.chat.findMany({
+            where: {
+            roomId: roomId
+            },
+            take: 50,
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+        return res.status(201).json({
+            success : true,
+            message : " Chats fetched successfully",
+            data : {
+                messages : messages
+            }
+        })
+        
+    } catch (error : any) {
+        
+    }
+    
+}
+
+export async function verifySlug(req : Request, res: Response) : Promise<any> {
+    try {
+        const slug = req.params.slug;
+        const room = await client.room.findFirst({
+            where : {
+                slug
+            }
+        })
+        return res.status(200).json({
+            success : true,
+            message : "fetched room successfully",
+            data : {
+                room : room
+            }
+        })
+    } catch (error : any) {
+        console.log(error.message);
+        return res.status(500).json({
+            error : "Internal server error"
+        })
+    }
+    
+}

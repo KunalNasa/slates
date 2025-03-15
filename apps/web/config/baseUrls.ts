@@ -1,0 +1,2 @@
+export const BACKEND_URL = 'http://localhost:4000/api'
+export const WS_URL = 'ws://localhost:8080?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6ImNtODkxc2lwNzAwMDByNmUzNHllNHR5OGUiLCJlbWFpbCI6Imt1bmFsbmFzYUBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Imt1bmFsX25hc2EifSwiaWF0IjoxNzQxOTkyODEyLCJleHAiOjE3NDMyODg4MTJ9.sJFGW-eawtPG9_RpukCC7bC0UkaKOVft9fCXSFMwLys'
