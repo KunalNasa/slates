@@ -1,0 +1,17 @@
+{
+    "name": "@slates/utils",
+    "version": "1.0.0",
+    "private": true,
+    "exports": {
+      "./cn": "./src/cn.ts"
+    },
+    "dependencies": {
+      "clsx": "^2.1.1",
+      "tailwind-merge": "^3.0.2"
+    },
+    "devDependencies": {
+      "@slates/eslint-config": "workspace:*",
+      "@slates/typescript-config": "workspace:*",
+      "typescript": "^5.8.2"
+    }
+  }
