@@ -1,3 +1,4 @@
+import { APIResponse, Chat, ErrorResponse, Room } from "@slates/backend-common/config";
 import { roomSchema } from "@slates/common/schemas";
 import { client } from "@slates/db/client";
 import { Request, Response } from "express";
@@ -11,11 +12,14 @@ export async function createRoom(req : Request, res: Response) : Promise<any> {
                 error : "Invalid data passed"
             })
         }
-        const userId = req.user?._id;
+        const userId = req.user?.id;
         if(!userId){
-            return res.status(401).json({
-                error : "Invalid request"
-            })
+            const response : ErrorResponse<null> = {
+                success : false,
+                message : "Unauthorised Request",
+                data : null
+            }
+            return res.status(401).json(response);
         }
         const isRoomAlreadyMade = await client.room.findFirst({
             where : {
@@ -23,9 +27,12 @@ export async function createRoom(req : Request, res: Response) : Promise<any> {
             }
         })
         if(isRoomAlreadyMade){
-            return res.status(400).json({
-                error : "Room already exists with this name, please try another one"
-            })
+            const response : ErrorResponse<null> = {
+                success : false,
+                message : "Room already exists with this name, please try another name",
+                data : null
+            }
+            return res.status(400).json(response);
         }
         const room = await client.room.create({
             data : {
@@ -33,17 +40,20 @@ export async function createRoom(req : Request, res: Response) : Promise<any> {
                 admindId : userId
             }
         })
-        return res.status(201).json({
-            data : {
-                roomId : room.id
-            }
-        })
+        // change the typeof room to Room after fixing
+        const response : APIResponse<typeof room> = {
+            success : true,
+            message : "Room created Successfully",
+            data : room
+        }
+        return res.status(201).json(response);
     } catch (error : any) {
         console.log("error creating room", error.message);
-        return res.status(500).json({
-            error : "Internal server error"
-        })
-        
+        const response : ErrorResponse<null> = {
+            success : false,
+            message : "Internal Server Error"
+        }
+        return res.status(500).json(response);
     }
     
 }
@@ -60,16 +70,20 @@ export async function fetchChats(req : Request, res: Response) : Promise<any> {
                 createdAt: 'desc'
             }
         });
-        return res.status(201).json({
+        const response : APIResponse<Chat[]> = {
             success : true,
-            message : " Chats fetched successfully",
-            data : {
-                messages : messages
-            }
-        })
+            message : "Chats fetched successfully",
+            data : messages
+        }
+        return res.status(201).json(response);
         
     } catch (error : any) {
-        
+        console.log("Error in fetching chats", error.message);
+        const response : ErrorResponse<null> = {
+            success : false,
+            message : "Internal Server Error",
+        }
+        return res.status(500).json(response);
     }
     
 }
@@ -82,18 +96,28 @@ export async function verifySlug(req : Request, res: Response) : Promise<any> {
                 slug
             }
         })
-        return res.status(200).json({
-            success : true,
-            message : "fetched room successfully",
-            data : {
-                room : room
+        if(!room){
+            const response : ErrorResponse<null> = {
+                success : false,
+                message : "No room found with this name"
             }
-        })
+            return res.status(404).json(response);
+        }
+        // TODO: Fix the type later
+        const response : APIResponse<typeof room> = {
+            success : true,
+            message : "Fetched room details successfully",
+            data : room
+        }
+        return res.status(200).json(response);
+
     } catch (error : any) {
         console.log(error.message);
-        return res.status(500).json({
-            error : "Internal server error"
-        })
+        const response : ErrorResponse<null> = {
+            success : false,
+            message : "Internal Server Error",
+        }
+        return res.status(500).json(response);
     }
     
 }

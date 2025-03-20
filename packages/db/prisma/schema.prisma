@@ -32,8 +32,8 @@ model Room {
   slug      String    @unique
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
-  admindId  String
-  admin     User      @relation(fields: [admindId], references: [id])
+  adminId   String
+  admin     User      @relation(fields: [adminId], references: [id])
 
   chat      Chat[]
 }

@@ -20,8 +20,8 @@ function checkUser(token : string) {
         if(!decoded || !(decoded as JwtPayload).user){
             return false;
         }
-        console.log((decoded as JwtPayload).user._id);
-        return (decoded as JwtPayload).user._id;
+        console.log((decoded as JwtPayload).user.id);
+        return (decoded as JwtPayload).user.id;
     } catch (error : any) {
         console.log(error.message);
         return false;
