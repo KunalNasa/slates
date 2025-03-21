@@ -6,24 +6,26 @@ import { Request, Response } from "express";
 export async function createRoom(req : Request, res: Response) : Promise<any> {
     try {
         const data = req.body;
-        const isValid = roomSchema.safeParse(data.data);
+        console.log(data);
+        const isValid = roomSchema.safeParse(data);
         if(!isValid.success){
-            return res.status(400).json({
-                error : "Invalid data passed"
-            })
+            const response : ErrorResponse = {
+                success : false,
+                message : "Invalid data passed"
+            }
+            return res.status(400).json(response);
         }
         const userId = req.user?.id;
         if(!userId){
-            const response : ErrorResponse<null> = {
+            const response : ErrorResponse = {
                 success : false,
                 message : "Unauthorised Request",
-                data : null
             }
             return res.status(401).json(response);
         }
         const isRoomAlreadyMade = await client.room.findFirst({
             where : {
-                slug : data.data.name
+                slug : data.name
             }
         })
         if(isRoomAlreadyMade){
@@ -36,8 +38,8 @@ export async function createRoom(req : Request, res: Response) : Promise<any> {
         }
         const room = await client.room.create({
             data : {
-                slug : data.data.name,
-                admindId : userId
+                slug : data.name,
+                adminId : userId
             }
         })
         // change the typeof room to Room after fixing

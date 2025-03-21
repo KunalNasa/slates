@@ -87,7 +87,7 @@ export class Game {
                 },
                 .....
             }
-             */
+            */
             const message = JSON.parse(event.data);
             if(event.type === "chat"){
                 const parsedData = JSON.parse(message.message);
@@ -141,7 +141,7 @@ export class Game {
 
         this.ws.send(JSON.stringify({
             type : "chat",
-            shape,
+            message : shape,
             roomId : this.roomId
         }))
     }
@@ -183,3 +183,4 @@ export class Game {
         })
     }
 }
+
