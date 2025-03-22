@@ -1,21 +1,11 @@
 import axios from "axios";
 import { BACKEND_URL } from "../../configs/ServerUrls";
 
-/*
-   ` -> Declare types of shapes
-    `-> initialize game class and declare private members
-    `-> initialise constructor which takes canvas, roomId and ws instance
-    `-> intialise destroy method which removes all the event listeners like mouseup, mousedown and mousemove
-    `-> method to setTool
-    `-> initialise async init function which get all existing shapes from BE and clear canvas
-    `-> initialise initHandler which fills shape array on chat message
-    `-> intialise clearCanvas function which clears whole canvas board and then re render all the shapes
-    -> declare mouseUp, mouseDown and mouseMover handler functions for the the respective eventhandlers
-    -> initialize initMouseHandlers which initialises all these handlers
-*/ 
-
-export type Tool = "circle" | "rect" | "pencil";
-
+export type Tool = "circle" | "rect" | "line" | "pencil";
+export type PencilPoints = {
+    x : number, y : number
+}
+let pencilTrace : Array<PencilPoints> = [];
 type Shape = {
     type : "rect",
     x : number,
@@ -28,11 +18,14 @@ type Shape = {
     centerY : number,
     radius : number
 } | {
-    type : "freeLine",
+    type : "line",
     startX : number,
     startY : number,
     endX : number,
     endY : number
+} | {
+    type : "pencil",
+    points : PencilPoints[]
 }
 
 export class Game {
@@ -101,9 +94,9 @@ export class Game {
             */
            console.log(event);
             const message = JSON.parse(event.data);
-            if(event.type === "chat"){
+            if(message.type === "chat"){
                 const parsedData = JSON.parse(message.message);
-                console.log('Parse Data to add:', parsedData);
+                // console.log('Parse Data to add:', parsedData);
                 this.existingShapes.push(parsedData);
                 this.clearCanvas();
             }
@@ -120,7 +113,12 @@ export class Game {
         this.clicked = true;
         this.startX = e.clientX;
         this.startY = e.clientY;
-        console.log("Mouse down tool",this.selectedTool);
+        if(this.selectedTool === 'pencil'){
+            this.ctx.beginPath();
+            // this.ctx.moveTo(this.startX, this.startY);
+        }
+        
+
     }
 
     mouseUpHandler = (e : any) => {
@@ -128,7 +126,7 @@ export class Game {
         const width = e.clientX - this.startX;
         const height = e.clientY - this.startY;
 
-        console.log("Selected Tool", this.selectedTool);
+
         let shape : Shape | null = null;
         if(this.selectedTool === "rect"){
             shape = {
@@ -146,14 +144,29 @@ export class Game {
                 centerY : this.startY + radius,
                 radius : radius
             }
+        }else if(this.selectedTool === "line"){
+            shape = {
+                type : "line",
+                startX : this.startX,
+                startY : this.startY,
+                endX : this.startX + width,
+                endY : this.startY + height
+            }
+
+        }else if(this.selectedTool === "pencil"){
+            this.ctx.closePath();
+            shape = {
+                type : "pencil",
+                points : pencilTrace
+            }
+            pencilTrace = [];
         }
         // console.log(shape);
         if(!shape){
             return;
         }
-        console.log(shape);
         this.existingShapes.push(shape);
-        console.log(JSON.stringify(shape));
+        // console.log(JSON.stringify(shape));
         this.ws.send(JSON.stringify({
             type : "chat",
             message : JSON.stringify(shape),
@@ -164,8 +177,11 @@ export class Game {
         if(this.clicked){
             const width = e.clientX - this.startX;
             const height = e.clientY - this.startY;
-            this.clearCanvas();
-            this.ctx.strokeStyle = "white"
+            if(this.selectedTool !== 'pencil'){
+                // for pencil we dont want to clear paths
+                this.clearCanvas();
+            }
+                this.ctx.strokeStyle = "white"
             const selectedTool = this.selectedTool;
             if(selectedTool === "rect"){
                 this.ctx.strokeRect(this.startX, this.startY, width, height);
@@ -177,9 +193,29 @@ export class Game {
                 this.ctx.arc(centerX, centerY, radius, 0, 2*Math.PI);
                 this.ctx.stroke();
                 this.ctx.closePath();
+            }else if(selectedTool === "line"){
+                console.log("Starting at", this.startX, this.startY);
+                console.log("Ending at", e.clientX, e.clientY);
+
+                this.ctx.beginPath();
+                this.ctx.moveTo(this.startX, this.startY);
+                this.ctx.lineTo(e.clientX, e.clientY);
+                this.ctx.stroke();  
+                this.ctx.closePath();
+            }else if(selectedTool === "pencil"){
+                console.log("Starting at", this.startX, this.startY);
+                console.log("Ending at", e.clientX, e.clientY);
+                this.ctx.lineTo(e.clientX, e.clientY);
+                this.ctx.stroke();  
+                this.startX = e.clientX;
+                this.startY = e.clientY;
+                pencilTrace.push({x : e.clientX, y: e.clientY});
             }
         }
     }
+
+
+
     clearCanvas(){
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.ctx.fillStyle = "black"
@@ -194,6 +230,23 @@ export class Game {
                 this.ctx.arc(shape.centerX, shape.centerY, Math.abs(shape.radius), 0, Math.PI * 2);
                 this.ctx.stroke();
                 this.ctx.closePath();            
+            }else if(shape.type === 'line'){
+                this.ctx.beginPath();
+                this.ctx.moveTo(shape.startX, shape.startY);
+                this.ctx.lineTo(shape.endX, shape.endY);
+                this.ctx.stroke();
+                this.ctx.closePath();
+            }else if(shape.type === "pencil"){
+                this.ctx.beginPath();
+                if(!shape.points){
+                    return;
+                }
+                shape.points.forEach(element => {
+                    console.log("Point in shape", element.x, element.y);
+                    this.ctx.lineTo(element.x, element.y);
+                    this.ctx.stroke();
+                });
+                this.ctx.closePath();
             }
         })
     }

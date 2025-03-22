@@ -67,7 +67,7 @@ export async function fetchChats(req : Request, res: Response) : Promise<any> {
             where: {
             roomId: roomId
             },
-            take: 50,
+            take: 1000,
             orderBy: {
                 createdAt: 'desc'
             }

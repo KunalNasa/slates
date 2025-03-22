@@ -48,11 +48,11 @@ function Topbar({selectedTool, setSelectedTool}: {
             <div className="flex gap-t">
               <button 
                 onClick={() => {
-                  setSelectedTool("pencil")
+                  setSelectedTool("line")
                 }}
-                style={{ backgroundColor: selectedTool === "pencil" ? 'gray' : 'white' }}
+                style={{ backgroundColor: selectedTool === "line" ? 'gray' : 'white' }}
               >
-                Pencil
+                Line
               </button>
               <button 
                 onClick={() => {
@@ -69,6 +69,14 @@ function Topbar({selectedTool, setSelectedTool}: {
                 style={{ backgroundColor: selectedTool === "circle" ? 'gray' : 'white' }}
               >
                 Circle
+              </button>
+              <button 
+                onClick={() => {
+                  setSelectedTool("pencil");
+                }} 
+                style={{ backgroundColor: selectedTool === "pencil" ? 'gray' : 'white' }}
+              >
+                Pencil
               </button>
             </div>
         </div>

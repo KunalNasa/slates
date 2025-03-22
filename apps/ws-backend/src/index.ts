@@ -19,7 +19,7 @@ function checkUser(token : string) {
         if(!decoded || !(decoded as JwtPayload).user){
             return false;
         }
-        console.log((decoded as JwtPayload).user.id);
+        // console.log((decoded as JwtPayload).user.id);
         return (decoded as JwtPayload).user.id;
     } catch (error : any) {
         console.log(error.message);
@@ -56,40 +56,41 @@ wss.on('connection', function(ws, request){
        try {
          const user = users.find(x => x.ws === ws);
          const parsedData = JSON.parse(data.toString()); 
+         const numericRoomId = Number(parsedData.roomId);
         //  console.log(user);
          if(!user){
+            console.log("No User Found")
             return;
          }
          if(parsedData.type === "join_room"){
-            //  if(user.rooms.find(x => x === parsedData.roomId)){
+            //  if(user.rooms.find(x => x === numericRoomId)){
             //     console.log("Pehle se hai");
             //      return;
             //  }
-            user.rooms.push(Number(parsedData.roomId));
+            user.rooms.push(numericRoomId);
             console.log(userId, "joined", user.rooms);
             //  console.log(users);
          }else if(parsedData.type === "leave_room"){
-             if(!(user.rooms.find(x => x === parsedData.roomId))){
+             if(!(user.rooms.find(x => x === numericRoomId))){
+                console.log("No such room joined by user");
                  return;
              }else{
-                 user.rooms = user.rooms.filter(x => { return x !== parsedData.roomId});
+                 user.rooms = user.rooms.filter(x => { return x !== numericRoomId});
              }
          }else if(parsedData.type === "chat"){
             // console.log(users);
-            const roomId = parsedData.roomId;
-            const numericId = Number(roomId);
             const message = parsedData.message;
             console.log(parsedData);
             await client.chat.create({
                 data : {
-                    roomId : numericId,
+                    roomId : numericRoomId,
                     message,
                     userId
                 }
             })
             console.log("all users",users);
             users.forEach(user => {
-                if (user.rooms.includes(roomId)) {
+                if (user.rooms.includes(numericRoomId)) {
                     console.log(`📡 Sending to user ${user.userId}: ${message}`);
                     
                     if (user.ws.readyState === WebSocket.OPEN) {
@@ -97,7 +98,7 @@ wss.on('connection', function(ws, request){
                         user.ws.send(JSON.stringify({
                             type: "chat",
                             message: message,
-                            roomId: roomId
+                            roomId: numericRoomId
                         }));
                     } else {
                         console.error(`🚨 WebSocket CLOSED for user ${user.userId}, skipping send.`);
