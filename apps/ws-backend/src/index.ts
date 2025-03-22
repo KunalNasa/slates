@@ -16,7 +16,6 @@ const users : User[] = [];
 function checkUser(token : string) {
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
-        console.log("Jwt token:", decoded);
         if(!decoded || !(decoded as JwtPayload).user){
             return false;
         }
@@ -66,8 +65,8 @@ wss.on('connection', function(ws, request){
             //     console.log("Pehle se hai");
             //      return;
             //  }
-            user.rooms.push(parsedData.roomId);
-            console.log(user, "joined", user.rooms);
+            user.rooms.push(Number(parsedData.roomId));
+            console.log(userId, "joined", user.rooms);
             //  console.log(users);
          }else if(parsedData.type === "leave_room"){
              if(!(user.rooms.find(x => x === parsedData.roomId))){

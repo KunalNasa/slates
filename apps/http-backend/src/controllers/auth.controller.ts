@@ -70,6 +70,7 @@ export async function signup(req : Request, res: Response) : Promise<any> {
 export async function signin(req : Request, res: Response) : Promise<any> {
     try {
         const data = req.body;
+        console.log(data);
         const isDataValid = signinSchema.safeParse(data);
         if(!isDataValid.success){
             const response : ErrorResponse = {

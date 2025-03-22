@@ -1,28 +1,21 @@
 'use client'
-// token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiY204ajM0eTZmMDAwMHI2YmNhbDVxank2ZyIsImVtYWlsIjoia3VuYWxAZ21haWwuY29tIiwidXNlcm5hbWUiOiJNZU15c2VsZiJ9LCJpYXQiOjE3NDI1ODAwMTAsImV4cCI6MTc0Mzg3NjAxMH0.GDxDmlOv2o8nctpbzkdI7nntTbBPJ3_loWSn6XvoWqY
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+
+import Link from 'next/link';
+
 export default function Page() {
-  const router = useRouter();
-  const [roomId, setRommId] = useState<string>("");
   return (
     <main className="h-screen flex flex-col items-center justify-center w-screen bg-black">
-      <input 
-        className="bg-gray-300 p-2 m-2 rounded-md"
-        type="text"
-        value={roomId} 
-        onChange={(e) =>{
-          setRommId(e.target.value);
-        }} 
-        placeholder="enter roomID"
-        />
-      <button
-        className="bg-green-400 p-2 rounded-md"
-        onClick={() => {
-        router.replace(`/room/${roomId}`)
-      }}>
-          Enter Room
-      </button>
+      <header className="w-full p-4 bg-gray-800 flex justify-between items-center">
+        <h1 className="text-white text-2xl">Slates</h1>
+        <nav>
+          <Link href="/signup">
+            <p className="text-white mx-2">Sign Up</p>
+          </Link>
+          <Link href="/signin">
+            <p className="text-white mx-2">Sign In</p>
+          </Link>
+        </nav>
+      </header>
     </main>
   )
 }

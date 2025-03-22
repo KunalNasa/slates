@@ -9,7 +9,8 @@ export function verifyToken(req : Request, res : Response, next : NextFunction){
     let token = authHeader && authHeader.split(' ')[1];
     // console.log(token);
     if (!token) {
-        token = req.cookies.token;
+        // console.log("My Cookies", req.cookies);
+        token = req.cookies.jwt;
     }
 
     if (!token) {

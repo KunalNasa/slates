@@ -43,7 +43,7 @@ export class Game {
     private startX : number;
     private startY : number;
     private clicked : boolean;
-    private selectedTool : Tool;
+    private selectedTool : Tool = "rect";
     private ws: WebSocket
     constructor(canvas : HTMLCanvasElement, roomId : string, ws : WebSocket){
         this.canvas = canvas;
@@ -51,7 +51,6 @@ export class Game {
         this.roomId = roomId;
         this.startX = 0;
         this.startY = 0;
-        this.selectedTool = "circle";
         this.existingShapes = [];
         this.clicked = false;
         this.ws = ws;
@@ -67,14 +66,26 @@ export class Game {
         
     }
     setTool(tool : Tool){
+        console.log("This tool: ",this.selectedTool);
         this.selectedTool = tool;
     }
 
     async init(){    
-        const getShapes = await axios.get(`${BACKEND_URL}/user/chats/${this.roomId}`);
-        console.log(getShapes);
-        this.existingShapes = getShapes.data.data;
-        this.clearCanvas();
+
+       try {
+         const getShapes = await axios.get(`${BACKEND_URL}/user/chats/${this.roomId}`, {
+            withCredentials : true
+         });
+         const data = getShapes.data.data;
+         data.forEach((element : any) => {
+            this.existingShapes.push(JSON.parse(element.message));
+         });
+         console.log(this.existingShapes);
+        //  this.existingShapes = getShapes.data.data.message;
+         this.clearCanvas();
+       } catch (error : any) {
+            console.log(error);
+       }
     }
     initHandler() {
         this.ws.onmessage = (event) => {
@@ -88,9 +99,11 @@ export class Game {
                 .....
             }
             */
+           console.log(event);
             const message = JSON.parse(event.data);
             if(event.type === "chat"){
                 const parsedData = JSON.parse(message.message);
+                console.log('Parse Data to add:', parsedData);
                 this.existingShapes.push(parsedData);
                 this.clearCanvas();
             }
@@ -107,13 +120,15 @@ export class Game {
         this.clicked = true;
         this.startX = e.clientX;
         this.startY = e.clientY;
+        console.log("Mouse down tool",this.selectedTool);
     }
 
     mouseUpHandler = (e : any) => {
         this.clicked = false;
         const width = e.clientX - this.startX;
         const height = e.clientY - this.startY;
-    
+
+        console.log("Selected Tool", this.selectedTool);
         let shape : Shape | null = null;
         if(this.selectedTool === "rect"){
             shape = {
@@ -123,7 +138,7 @@ export class Game {
                 width : width,
                 height : height
             }
-        }else if(shape === "circle"){
+        }else if(this.selectedTool === "circle"){
             const radius = Math.max(height, width) / 2;
             shape = {
                 type : "circle",
@@ -132,17 +147,17 @@ export class Game {
                 radius : radius
             }
         }
-
+        // console.log(shape);
         if(!shape){
             return;
         }
-
+        console.log(shape);
         this.existingShapes.push(shape);
-
+        console.log(JSON.stringify(shape));
         this.ws.send(JSON.stringify({
             type : "chat",
-            message : shape,
-            roomId : this.roomId
+            message : JSON.stringify(shape),
+            roomId : Number(this.roomId)
         }))
     }
     mouseMoveHandler = (e : any) => {

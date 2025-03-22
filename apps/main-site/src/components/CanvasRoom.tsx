@@ -12,7 +12,8 @@ export default function CanvasRoom({socket, roomId} : {
   const [selectedTool, setSelectedTool] = useState<Tool>('rect');
   useEffect(() => {
     game?.setTool(selectedTool);
-  }, [selectedTool, game]);
+    console.log("Set tool to: ", selectedTool);
+  }, [selectedTool, setSelectedTool, game]);
 
   useEffect(() => {
     if(canvasRef.current){
@@ -25,9 +26,50 @@ export default function CanvasRoom({socket, roomId} : {
     }
   }, [])
 
-  return (
-    <div>
-      <canvas ref = {canvasRef}></canvas>
-    </div>
-  );
+  return <div style={{
+    height: "100vh",
+    overflow: "hidden"
+}}>
+    <canvas ref={canvasRef} width={window.innerWidth} height={window.innerHeight}></canvas>
+    <Topbar setSelectedTool={setSelectedTool} selectedTool={selectedTool} />
+  </div>
+}
+
+
+function Topbar({selectedTool, setSelectedTool}: {
+    selectedTool: Tool,
+    setSelectedTool: (s: Tool) => void
+}) {
+    return <div style={{
+            position: "fixed",
+            top: 10,
+            left: 10
+        }}>
+            <div className="flex gap-t">
+              <button 
+                onClick={() => {
+                  setSelectedTool("pencil")
+                }}
+                style={{ backgroundColor: selectedTool === "pencil" ? 'gray' : 'white' }}
+              >
+                Pencil
+              </button>
+              <button 
+                onClick={() => {
+                  setSelectedTool("rect")
+                }} 
+                style={{ backgroundColor: selectedTool === "rect" ? 'gray' : 'white' }}
+              >
+                Rectangle
+              </button>
+              <button 
+                onClick={() => {
+                  setSelectedTool("circle");
+                }} 
+                style={{ backgroundColor: selectedTool === "circle" ? 'gray' : 'white' }}
+              >
+                Circle
+              </button>
+            </div>
+        </div>
 }
