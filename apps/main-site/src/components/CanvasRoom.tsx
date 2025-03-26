@@ -1,11 +1,16 @@
 'use client'
 import { useEffect, useRef, useState } from "react";
 import { Game, Tool } from "../lib/draw";
+import { GoDash } from "react-icons/go";
+import { MdOutlineRectangle } from "react-icons/md";
+import { FaPencilAlt, FaRegCircle } from "react-icons/fa";
+import { LuGrab } from "react-icons/lu";
 
 export default function CanvasRoom({ socket, roomId }: { socket: WebSocket; roomId: string; }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game>();
   const [selectedTool, setSelectedTool] = useState<Tool>('pan');
+  const [scale, setScale] = useState<number>(100);
 
   useEffect(() => {
     game?.setTool(selectedTool);
@@ -20,9 +25,9 @@ export default function CanvasRoom({ socket, roomId }: { socket: WebSocket; room
 
       // Set a large canvas size
      
-
-      const g = new Game(canvas, roomId, socket);
+      const g = new Game(canvas, roomId, socket, setScale);
       setGame(g);
+    
 
       return () => {
         g.destroy();
@@ -33,24 +38,33 @@ export default function CanvasRoom({ socket, roomId }: { socket: WebSocket; room
   return (
     <div>
       <canvas ref={canvasRef} />
+      <div className="bg-gray-800 text-sm left-5 rounded-md p-2 text-white fixed bottom-10">{scale.toString()}%</div>
       <Topbar setSelectedTool={setSelectedTool} selectedTool={selectedTool} />
     </div>
   );
 }
 
+const tools = [
+  { id: "line", icon: <GoDash /> },
+  { id: "rect", icon: <MdOutlineRectangle /> },
+  { id: "circle", icon: <FaRegCircle /> },
+  { id: "pencil", icon: <FaPencilAlt /> },
+  { id: "pan", icon: <LuGrab /> }
+];
+
 function Topbar({ selectedTool, setSelectedTool }: { selectedTool: Tool; setSelectedTool: (s: Tool) => void }) {
   return (
-    <div style={{ position: "fixed", top: 10, left: 10 }}>
-      <div className="flex gap-2 bg-white p-2 rounded shadow-md">
-        {["line", "rect", "circle", "pencil", "pan", "ellipse", "rhombus"].map((tool) => (
-          <button
-            key={tool}
-            onClick={() => setSelectedTool(tool as Tool)}
-            style={{ backgroundColor: selectedTool === tool ? 'gray' : 'white', padding: "5px 10px", borderRadius: "5px" }}
-          >
-            {tool.charAt(0).toUpperCase() + tool.slice(1)}
-          </button>
-        ))}
+    <div className="fixed top-5 left-1/2 transform -translate-x-1/2">
+      <div className="flex gap-2 bg-gray-900/90 p-2 rounded shadow-md">
+      {tools.map((tool, idx) => (
+        <button
+        key={idx}
+        onClick={() => setSelectedTool(tool.id as Tool)}
+        className={`px-4 py-2 text-white rounded ${selectedTool === tool.id ? 'bg-gray-600' : 'bg-none'}`}
+        >
+          {tool.icon}
+        </button>
+      ))}
       </div>
     </div>
   );
