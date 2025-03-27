@@ -81,7 +81,6 @@ export class Game {
         
     }
     setTool(tool : Tool){
-        console.log("This tool: ",this.selectedTool);
         this.selectedTool = tool;
     }
 
@@ -95,7 +94,7 @@ export class Game {
          data.forEach((element : any) => {
             this.existingShapes.push(JSON.parse(element.message));
          });
-         console.log(this.existingShapes);
+
         //  this.existingShapes = getShapes.data.data.message;
          this.clearCanvas();
        } catch (error : any) {
@@ -114,11 +113,9 @@ export class Game {
                 .....
             }
             */
-           console.log(event);
             const message = JSON.parse(event.data);
             if(message.type === "chat"){
                 const parsedData = JSON.parse(message.message);
-                // console.log('Parse Data to add:', parsedData);
                 this.existingShapes.push(parsedData);
                 this.clearCanvas();
             }
@@ -216,12 +213,10 @@ export class Game {
             this.clicked = false;
             this.setTool("pan");
         }
-        // console.log(shape);
         if(!shape){
             return;
         }
         this.existingShapes.push(shape);
-        // console.log(JSON.stringify(shape));
         this.ws.send(JSON.stringify({
             type : "chat",
             message : JSON.stringify(shape),
