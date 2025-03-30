@@ -10,7 +10,10 @@
   "exports": {
     "./styles.css": "./dist/styles.css",
     "./Colors": "./src/Colors.tsx",
-    "./Button": "./src/Button.tsx"
+    "./Button": "./src/Button.tsx",
+    "./Input": "./src/Input.tsx",
+    "./Formfield": "./src/FormField.tsx"
+
   },
   "license": "MIT",
   "scripts": {

@@ -4,6 +4,7 @@ import authRoutes from './routes/auth.routes.js'
 import userRoutes from './routes/user.routes.js'
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import { client } from "@slates/db/client"
 
 dotenv.config();
 
@@ -15,7 +16,6 @@ app.use(cors({
     credentials: true
 }));
 app.use(cookieParser());
-
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 
