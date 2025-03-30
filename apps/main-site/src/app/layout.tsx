@@ -26,12 +26,12 @@ export default function RootLayout({
       <body className={`${atma.variable}`}>
         {children}
         <Toaster toastOptions={{
-    style: {
-      border: 'solid 2px black',
-      padding : "25px",
-      fontSize: "16px",
-      boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)"
-    },
+          style: {
+            border: 'solid 2px black',
+            padding : "25px",
+            fontSize: "16px",
+            boxShadow: "4px 4px 0px 0px rgba(0,0,0,1)"
+          },
   }} position="top-right" richColors />
       </body>
       

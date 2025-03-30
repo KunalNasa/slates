@@ -1,8 +1,8 @@
 'use client'
 import { useParams } from "next/navigation";
-import { WS_URL } from "../../../configs/ServerUrls";
+import { WS_URL } from "../../../../configs/ServerUrls";
 import { useEffect, useState } from "react";
-import CanvasRoom from "../../../components/CanvasRoom";
+import CanvasRoom from "../../../../components/CanvasRoom";
 
 export default function page() {
     const params = useParams();
