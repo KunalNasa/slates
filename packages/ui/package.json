@@ -9,7 +9,8 @@
   ],
   "exports": {
     "./styles.css": "./dist/styles.css",
-    "./Colors": "./src/Colors.tsx"
+    "./Colors": "./src/Colors.tsx",
+    "./Button": "./src/Button.tsx"
   },
   "license": "MIT",
   "scripts": {
@@ -28,10 +29,11 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@tailwindcss/cli": "^4.0.12",
-    "@tailwindcss/postcss": "^4.0.12",
     "@slates/design-system": "workspace:*",
     "@slates/utils": "workspace:*",
+    "@tailwindcss/cli": "^4.0.12",
+    "@tailwindcss/postcss": "^4.0.12",
+    "clsx": "^2.1.1",
     "postcss": "^8.5.3",
     "tailwindcss": "^4.0.12"
   }

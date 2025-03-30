@@ -1,21 +1,17 @@
 'use client'
 
-import Link from 'next/link';
+import Features from '../components/landingPage/Features';
+import Footer from '../components/landingPage/Footer';
+import GetStarted from '../components/landingPage/GetStarted';
+import Hero from '../components/landingPage/Hero';
 
 export default function Page() {
   return (
-    <main className="h-screen flex flex-col items-center justify-center w-screen bg-black">
-      <header className="w-full p-4 bg-gray-800 flex justify-between items-center">
-        <h1 className="text-white text-2xl">Slates</h1>
-        <nav>
-          <Link href="/signup">
-            <p className="text-white mx-2">Sign Up</p>
-          </Link>
-          <Link href="/signin">
-            <p className="text-white mx-2">Sign In</p>
-          </Link>
-        </nav>
-      </header>
+    <main className="w-full bg-white">
+      <Hero/>
+      <Features />
+      <GetStarted/>
+      <Footer />
     </main>
   )
 }

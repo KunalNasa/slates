@@ -11,3 +11,7 @@
     );
   }
 }
+
+@theme {
+  --font-atma: var(--font-atma);
+}
