@@ -9,20 +9,20 @@ const features = [
     {
         icon: <IoMdInfinite />,
         title: "Infinite Canvas",
-        background: "bg-blue-500/50",
+        background: "bg-red-500/60",
         description: "Never feel restricted by space again. With an infinite canvas, you can zoom and pan freely, allowing your ideas to flow without boundaries. Whether you're sketching, brainstorming, or mapping out complex ideas, the limitless workspace adapts to your needs, giving you complete creative freedom."
     },
     {
       icon: <MdPeopleAlt />,
       title: "Real-time Collaboration",
-      background: "bg-pink-500/50",
+      background: "bg-purple-500/60",
       description:
         "Work together seamlessly, no matter where your team is. Invite teammates to your board and see their changes happen instantly. Whether you’re brainstorming, designing, or teaching, real-time collaboration ensures everyone stays on the same page, enhancing productivity and teamwork.",
     },
     {
       icon: <FaCloudDownloadAlt />,
       title: "Cloud Sync",
-      background: "bg-green-500/50",
+      background: "bg-green-500/60",
       description:
         "Access your drawings from anywhere, at any time. Your work is securely stored in the cloud, so you never have to worry about losing progress. Whether you're switching devices or revisiting past projects, everything is just a click away, ready when you need it.",
     },
@@ -30,8 +30,8 @@ const features = [
 
 export default function Features() {
   return (
-    <div className="w-full flex flex-col items-center justify-center my-10">
-      <h2 className="font-semibold text-7xl">
+    <div id="features" className="w-full flex flex-col items-center justify-center my-10">
+      <h2 className="font-semibold my-5 text-7xl">
         Features...
       </h2>
       <div className="w-full p-5 px-20 flex flex-col gap-4">

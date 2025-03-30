@@ -16,7 +16,7 @@ function HeroLeft () {
         <div className=" w-1/2 p-5 rounded-r-3xl bg-pink-500/20">
             <div className="p-3 w-full">
                 <div className="mb-5">
-                    <Image width={120} height={120} src="/SlatesLogo.svg" alt="Logo" />
+                    <Image width={150} height={150} src="/SlatesLogo.svg" alt="Logo" />
                 </div>
                 <div className="py-20">
 

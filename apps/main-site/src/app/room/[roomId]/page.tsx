@@ -25,6 +25,8 @@ export default function page() {
         return <div>Loading...</div>
     }
   return (
+    <div className="bg-black">
     <CanvasRoom roomId={roomId as string} socket = {socket}/>
+    </div>
   );
 }

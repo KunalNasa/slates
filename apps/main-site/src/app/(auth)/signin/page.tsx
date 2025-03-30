@@ -1,61 +1,77 @@
 'use client'
 import axios from 'axios';
-import React, { useState } from 'react';
+import z from "zod"
+import { zodResolver } from '@hookform/resolvers/zod'; // Import zodResolver
+import { FormField } from "@slates/ui/Formfield"
+import { Input } from "@slates/ui/Input"
+
+import {signinSchema} from "@slates/common/schemas"
 import { BACKEND_URL } from '../../../configs/ServerUrls';
-
+import { useForm } from "react-hook-form"
+import { Button } from '@slates/ui/Button';
+import GoBack from '../../../components/GoBack';
+import Link from 'next/link';
+import Image from 'next/image';
+import { ErrorHandler } from '../../../lib/ErrorHandler';
+import { useRouter } from 'next/navigation';
 export default function SignInPage() {
-    const [identifier, setIdentifier] = useState('');
-    const [password, setPassword] = useState('');
+    const router = useRouter();
+    const form = useForm<z.infer<typeof signinSchema>> ({
+        resolver : zodResolver(signinSchema),
+        defaultValues : {
+            identifier : "",
+            password : ""
+        }
+    })
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
+    const onFormSubmit = async (data : z.infer<typeof signinSchema>) => {
         try {
+            const {identifier, password} = data;
             const response = await axios.post(`${BACKEND_URL}/auth/signin`, {
-                    identifier,
-                    password
+                identifier,
+                password
             },{
                 withCredentials : true
             });
-            const data = response.data;
-            if(data.success){
-                const token = data.data.token;
+            const responseData = response.data;
+            if(responseData.success){
+                const token = responseData.data.token;
                 localStorage.setItem('jwt', token);
+                router.replace('/room')
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error : any) {
+            ErrorHandler(error);
         }
-    };
+    }
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100">
-            <div className="w-full max-w-md p-8 space-y-6 bg-white rounded shadow-md">
-                <h1 className="text-2xl font-bold text-center">Sign In</h1>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label htmlFor="identifier" className="block text-sm font-medium text-gray-700">Identifier:</label>
-                        <input
-                            type="text"
-                            id="identifier"
-                            value={identifier}
-                            onChange={(e) => setIdentifier(e.target.value)}
-                            className="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password:</label>
-                        <input
-                            type="password"
-                            id="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-3 py-2 mt-1 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                        />
-                    </div>
-                    <button type="submit" className="w-full px-4 py-2 font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Sign In
-                    </button>
+        <div className="flex items-center bg-white justify-center h-screen">
+            <div className='w-[40%] h-screen p-10'>
+                <GoBack/>
+                    <h3 className='text-2xl mt-5 font-semibold'>Singin to slates</h3>
+                <form className='border my-5 p-5 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0)] rounded-sm' onSubmit={form.handleSubmit(onFormSubmit)}>
+                    <FormField
+                        name='identifier'
+                        label='Username/Email'
+                        errors={form.formState.errors}>
+                        <Input placeholder='Enter email/password' {...form.register("identifier")} />
+                    </FormField>
+                    <FormField
+                        name='password'
+                        label='Password'
+                        errors={form.formState.errors}>
+                        <Input type='password' placeholder='Enter password' {...form.register("password")} />
+                    </FormField>
+                    
+                    <Button type='submit' variant='primary-pink' className='w-full'>Submit</Button>
                 </form>
+                <p className='my-5'>Don't have an account? <Link className='hover:text-purple-500/60' href="/signup">Signup</Link></p>
             </div>
+            <div className='w-[60%] p-5 flex flex-col items-center justify-center h-screen bg-pink-500'>
+                <h3 className='text-5xl font-semibold'><span className='bg-green-500 p-1 rounded-lg px-2'>Join.</span> <span className='bg-purple-500 p-1 rounded-lg px-2'>Create.</span> <span className='bg-yellow-500 p-1 rounded-lg px-2'>Collaborate.</span>  Unleash your ideas on an infinite canvas!</h3>
+                <Image src="/AuthPageImage.svg" height={800} width={800} className='my-auto mx-auto' alt="" />
+            </div>
+
         </div>
     );
 }

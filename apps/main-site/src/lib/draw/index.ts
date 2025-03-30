@@ -63,7 +63,7 @@ export class Game {
         this.startY = 0;
         this.existingShapes = [];
         this.clicked = false;
-        this.ctx.lineWidth = 1.2
+        this.ctx.lineWidth = 2
 
         this.ws = ws;
         this.init();
@@ -327,3 +327,5 @@ export class Game {
     }
     
 }
+
+
