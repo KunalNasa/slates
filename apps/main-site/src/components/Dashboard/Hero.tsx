@@ -22,7 +22,7 @@ export default function RoomHero() {
     }
   })
   useEffect(() => {
-    const userRooms = "TODO: Find User Rooms here"
+    const userRooms = "TODO: Find User Rooms here to display on rooms page"
   }, [])
   const onSubmit = async (data : z.infer<typeof roomSchema>) => {
     try {
@@ -32,7 +32,6 @@ export default function RoomHero() {
       });
       const payload = response.data;
       const roomId = payload.data.id;
-      console.log(roomId);
       if(roomId){
         router.replace(`/room/${roomId}`);
       }

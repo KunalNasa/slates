@@ -5,13 +5,28 @@ import { GoDash } from "react-icons/go";
 import { MdOutlineRectangle } from "react-icons/md";
 import { FaPencilAlt, FaRegCircle } from "react-icons/fa";
 import { LuGrab } from "react-icons/lu";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function CanvasRoom({ socket, roomId }: { socket: WebSocket; roomId: string; }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game>();
   const [selectedTool, setSelectedTool] = useState<Tool>('pan');
   const [scale, setScale] = useState<number>(100);
+  const router = useRouter();
 
+  socket.onmessage = (event) => {
+      console.log("Raw WebSocket message received:", event);
+      const response = JSON.parse(event.data);
+      console.log("Received from server:", response);
+      if (!response.success) {
+        router.replace("/room");
+        toast.error("Error", {
+          description: "You are not allowed to join this room",
+          duration: 3000,
+      });  
+      }
+  };
   useEffect(() => {
     game?.setTool(selectedTool);
     console.log("Set tool to: ", selectedTool);

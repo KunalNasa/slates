@@ -13,14 +13,18 @@ export default function page() {
         const ws = new WebSocket(`${WS_URL}?token=${token}`);
         ws.onopen = () => {
             setSocket(ws);
+            console.log("WebSocket connection opened");
             const data = JSON.stringify({
                 type: "join_room",
                 roomId
             });
-            // console.log(data);
             ws.send(data)
-        }
+        };        
+        
     }, [])
+    useEffect(() => {
+
+    }, [socket])
     if(!socket){
         return <div>Loading...</div>
     }

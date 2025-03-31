@@ -1,5 +1,5 @@
 import { client } from "@slates/db/client";
-
+import WebSocket from "ws";
 import { handleChat } from "./chat.controller.js";
 import { User } from "../models/user.store.js";
 
@@ -25,7 +25,12 @@ async function joinRoom(user: User, roomId: number) {
         where: { roomId, userId: user.userId }
     });
     if (!isUserAllowed) {
-        user.ws.send(JSON.stringify({ success: false, message: "Access Denied" }));
+        console.log(`Access Denied for user ${user.userId} to room ${roomId}`);
+        if (user.ws.readyState === WebSocket.OPEN) {
+            user.ws.send(JSON.stringify({ success: false, message: "Access Denied" }));
+        } else {
+            console.log("WebSocket not open, cannot send Access Denied message");
+        }
         return;
     }
 

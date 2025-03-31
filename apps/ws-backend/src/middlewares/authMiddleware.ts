@@ -25,7 +25,7 @@ export function authenticateUser(ws: WebSocket, request: any): User | null {
         return null;
     }
 
-    const user: User = { ws, userId, rooms: [] };
+    const user: User = { ws, userId, rooms: [] };;
     userStore.addUser(user);
     return user;
 }
