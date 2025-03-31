@@ -8,7 +8,7 @@ export const wss = new WebSocketServer({ port: 8080 });
 wss.on("connection", (ws, request) => {
     const user = authenticateUser(ws, request);
     if (!user) return;
-
+    
     ws.on("message", async (data) => {
         handleMessage(user, data);
     });

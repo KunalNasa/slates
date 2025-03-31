@@ -6,7 +6,6 @@ import Sidebar from "../../../components/Sidebar";
 import RoomHero from "../../../components/Dashboard/Hero";
 
 export default function page() {
-    
   const [isOpen, setIsOpen] = useState<boolean>(true);
   return (
       <div className="flex bg-gray-100 flex-row w-full h-screen">

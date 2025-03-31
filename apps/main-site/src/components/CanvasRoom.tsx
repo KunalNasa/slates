@@ -5,28 +5,15 @@ import { GoDash } from "react-icons/go";
 import { MdOutlineRectangle } from "react-icons/md";
 import { FaPencilAlt, FaRegCircle } from "react-icons/fa";
 import { LuGrab } from "react-icons/lu";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import Searchbar from "./Search/Searchbar";
+
 
 export default function CanvasRoom({ socket, roomId }: { socket: WebSocket; roomId: string; }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [game, setGame] = useState<Game>();
   const [selectedTool, setSelectedTool] = useState<Tool>('pan');
   const [scale, setScale] = useState<number>(100);
-  const router = useRouter();
-
-  socket.onmessage = (event) => {
-      console.log("Raw WebSocket message received:", event);
-      const response = JSON.parse(event.data);
-      console.log("Received from server:", response);
-      if (!response.success) {
-        router.replace("/room");
-        toast.error("Error", {
-          description: "You are not allowed to join this room",
-          duration: 3000,
-      });  
-      }
-  };
+  
   useEffect(() => {
     game?.setTool(selectedTool);
     console.log("Set tool to: ", selectedTool);
@@ -55,6 +42,7 @@ export default function CanvasRoom({ socket, roomId }: { socket: WebSocket; room
       <canvas ref={canvasRef} />
       <div className="bg-gray-800 text-sm left-5 rounded-md p-2 text-white fixed bottom-10">{scale.toString()}%</div>
       <Topbar setSelectedTool={setSelectedTool} selectedTool={selectedTool} />
+      <Searchbar socket = {socket}/>
     </div>
   );
 }
@@ -84,3 +72,5 @@ function Topbar({ selectedTool, setSelectedTool }: { selectedTool: Tool; setSele
     </div>
   );
 }
+
+

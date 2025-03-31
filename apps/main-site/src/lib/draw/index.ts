@@ -1,6 +1,9 @@
 import axios from "axios";
 import { BACKEND_URL } from "../../configs/ServerUrls";
 import { Dispatch, SetStateAction } from "react";
+import  { useRouter } from "next/router";
+import { ErrorHandler } from "../ErrorHandler";
+import { toast } from "sonner";
 
 /* TODO: 
     Redefine shapes type for ellipse and add logic to erase.
@@ -114,6 +117,22 @@ export class Game {
             }
             */
             const message = JSON.parse(event.data);
+            if(message.type === "success"){
+                toast.success("Success", {
+                    description: message.message,
+                    duration: 3000,
+                });  
+            }
+            if(message.type === "error"){
+                toast.error("Error", {
+                    description: message.message,
+                    duration: 3000,
+                });
+            }
+            if(message.type === "unauthorised"){
+                this.ws.close();
+                window.location.href = "/room"; // Redirect to /room
+            }
             if(message.type === "chat"){
                 const parsedData = JSON.parse(message.message);
                 this.existingShapes.push(parsedData);

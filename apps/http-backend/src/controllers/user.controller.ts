@@ -120,15 +120,22 @@ export async function verifySlug(req : Request, res: Response) : Promise<any> {
             return res.status(404).json(response);
         }
         const userId = req.user?.id;
-        let isUserAdmin = false;
-
-        if(userId === room.adminId){
-            isUserAdmin = true;
+        if(userId !== room.adminId){
+            const findParticipant = await client.participants.findFirst({
+                where : {
+                    userId : userId,
+                    roomId : room.id
+                }
+            })
+            if(!findParticipant){
+                const response : ErrorResponse = {
+                    success : false,
+                    message : "You are not allowed to join this room"
+                }
+                return res.status(400).json(response);
+            }
         }
-        // Ensure participants is typed correctly
-                const participants = room;
-                console.log(participants);
-                console.log(typeof participants);
+        
 
         const response : APIResponse<Room> = {
             success : true,
@@ -146,4 +153,33 @@ export async function verifySlug(req : Request, res: Response) : Promise<any> {
         return res.status(500).json(response);
     }
     
+}
+
+
+export async function searchUsers(req : Request, res: Response) : Promise<any> {
+    try {
+        const query = req.query.query;
+        const users = await client.user.findMany({
+            where: {
+            OR: [
+                { username: { contains: query as string, mode: 'insensitive' } },
+                { email: { contains: query as string, mode: 'insensitive' } }
+            ]
+            },
+            take: 50,
+            select : {
+                username : true,
+                email:  true,
+                name : true,
+                avatar : true
+            }
+        });
+        return res.status(200).json({
+            success : true,
+            message : "Users fetched",
+            data : users
+        })
+    } catch (error) {
+        
+    }
 }

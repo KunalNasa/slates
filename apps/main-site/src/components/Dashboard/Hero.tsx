@@ -10,11 +10,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { BACKEND_URL } from "../../configs/ServerUrls";
 import { ErrorHandler } from "../../lib/ErrorHandler";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { LuLoaderCircle } from "react-icons/lu";
 
 
 export default function RoomHero() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const form = useForm< z.infer<typeof roomSchema>>({
     resolver : zodResolver(roomSchema),
     defaultValues : {
@@ -25,6 +27,7 @@ export default function RoomHero() {
     const userRooms = "TODO: Find User Rooms here to display on rooms page"
   }, [])
   const onSubmit = async (data : z.infer<typeof roomSchema>) => {
+    setLoading(true);
     try {
       const {name} = data;
       const response = await axios.get(`${BACKEND_URL}/user/room/${name}`, {
@@ -37,6 +40,8 @@ export default function RoomHero() {
       }
     } catch (error : any) {
         ErrorHandler(error); 
+    }finally{
+      setLoading(false);
     }
   }
   return (
@@ -50,7 +55,9 @@ export default function RoomHero() {
         >
           <Input placeholder="Search Room" {...form.register("name")}/>
         </FormField>
-        <Button type="submit" variant="primary-blue">Join Room</Button>
+        <Button type="submit" variant="primary-blue">
+          {loading ? <LuLoaderCircle className="animate-spin" /> : "Join Room"}
+        </Button>
       </form>
       <div className="my-10">
         <h3 className="text-4xl font-semibold">Previously Joined Rooms</h3>
