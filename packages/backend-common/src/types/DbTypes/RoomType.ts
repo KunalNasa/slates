@@ -1,7 +1,7 @@
 import { Chat } from "./ChatType"
 
 export interface Room {
-  id : string,
+  id : number,
   slug : string,
   createdAt : Date,
   updatedAt : Date,

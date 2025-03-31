@@ -1,4 +1,4 @@
-import { APIResponse, Chat, ErrorResponse, Room } from "@slates/backend-common/config";
+import { APIResponse, Chat, ErrorResponse, Participant, Room } from "@slates/backend-common/config";
 import { roomSchema } from "@slates/common/schemas";
 import { client } from "@slates/db/client";
 import { Request, Response } from "express";
@@ -6,7 +6,6 @@ import { Request, Response } from "express";
 export async function createRoom(req : Request, res: Response) : Promise<any> {
     try {
         const data = req.body;
-        console.log(data);
         const isValid = roomSchema.safeParse(data);
         if(!isValid.success){
             const response : ErrorResponse = {
@@ -42,6 +41,21 @@ export async function createRoom(req : Request, res: Response) : Promise<any> {
                 adminId : userId
             }
         })
+        const participants = await client.participants.create({
+            data : {
+                userId,
+                canRead : true,
+                canWrite : true,
+                roomId : room.id
+            }
+        });
+        if(!participants || !room){
+            const response : ErrorResponse = {
+                success : false,
+                message : "Failed to create room",
+            }
+            return res.status(500).json(response);
+        }
         // change the typeof room to Room after fixing
         const response : APIResponse<typeof room> = {
             success : true,
@@ -105,8 +119,18 @@ export async function verifySlug(req : Request, res: Response) : Promise<any> {
             }
             return res.status(404).json(response);
         }
-        // TODO: Fix the type later
-        const response : APIResponse<typeof room> = {
+        const userId = req.user?.id;
+        let isUserAdmin = false;
+
+        if(userId === room.adminId){
+            isUserAdmin = true;
+        }
+        // Ensure participants is typed correctly
+                const participants = room;
+                console.log(participants);
+                console.log(typeof participants);
+
+        const response : APIResponse<Room> = {
             success : true,
             message : "Fetched room details successfully",
             data : room

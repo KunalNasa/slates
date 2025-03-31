@@ -6,6 +6,8 @@ export type { requestUser } from "./types/req";
 export type { Room } from "./types/DbTypes/RoomType";
 export type { User } from "./types/DbTypes/UserType";
 export type { Chat } from "./types/DbTypes/ChatType";
+export type { Participant } from "./types/DbTypes/ParticipantsType";
+
 
 
 
