@@ -128,4 +128,6 @@
 
 
 import './configs/websocketServer.js'
+import './configs/BullMq.js'
+
 console.log("WebSocket server is running on ws://localhost:8080");
