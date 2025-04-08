@@ -139,3 +139,23 @@ export async function signin(req : Request, res: Response) : Promise<any> {
     }
     
 }
+
+export async function signout(req : Request, res: Response) : Promise<any> {
+    try {
+        res.cookie('jwt', '', {maxAge : 0});
+        const response : APIResponse<null> = {
+            success : true,
+            message : "logged out successfully",
+            data : null
+        }
+		res.status(200).json(response);
+    } catch (error : any) {
+        console.log("Error in signin route", error.message);
+        const response : ErrorResponse = {
+            success : false,
+            message : "Internal Server Error"
+        }
+        return res.status(500).json(response);
+    }
+    
+}

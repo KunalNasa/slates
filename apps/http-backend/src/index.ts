@@ -4,7 +4,6 @@ import authRoutes from './routes/auth.routes.js'
 import userRoutes from './routes/user.routes.js'
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import { client } from "@slates/db/client"
 
 dotenv.config();
 
