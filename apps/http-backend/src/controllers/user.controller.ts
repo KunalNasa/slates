@@ -1,5 +1,5 @@
 import { APIResponse, Chat, ErrorResponse, Participant, Room } from "@slates/backend-common/config";
-import { roomSchema } from "@slates/common/schemas";
+import { DisplayRoomType, roomSchema } from "@slates/common/schemas";
 import { client } from "@slates/db/client";
 import { Request, Response } from "express";
 
@@ -182,4 +182,66 @@ export async function searchUsers(req : Request, res: Response) : Promise<any> {
     } catch (error) {
         
     }
+}
+
+export async function getUserCreatedRooms(req: Request, res: Response) : Promise<any> {
+    try {
+        const userId = req.user?.id;
+        const rooms = await client.room.findMany({
+            where : {
+                adminId : userId
+            }
+        });
+        const response : APIResponse<Room[]> = {
+            success : true,
+            message : "Rooms fetched successfully",
+            data : rooms
+        }
+        return res.status(200).json(response);
+    } catch (error : any) {
+        console.log("Error in fetching user rooms", error.message);
+        const response : ErrorResponse = {
+            success : false,
+            message : "Internal server error"
+        }
+        return res.status(500).json(response);
+    }
+
+}
+
+export async function getAllRooms(req: Request, res: Response) : Promise<any> {
+    try {
+        const userId = req.user?.id;
+        const allRooms = await client.participants.findMany({
+            where : {
+                userId
+            },
+            select : {
+                room : true,
+                user : true
+            }
+        });
+        // console.log(allRooms);
+        const formatRoomData : DisplayRoomType[] = [];
+        allRooms.map(item => {
+            const {password, id , createdAt, ...rest} = item.user;
+            const newData : DisplayRoomType = {...item.room, ...rest};
+            formatRoomData.push(newData);
+        });
+        // console.log(formatRoomData);
+        const response : APIResponse<DisplayRoomType[]> = {
+            success : true,
+            message : "Rooms fetched successfully",
+            data : formatRoomData
+        }
+        return res.status(200).json(response);
+    } catch (error : any) {
+        console.log("Error in fetching all rooms", error.message);
+        const response : ErrorResponse = {
+            success : false,
+            message : "Internal server error"
+        }
+        return res.status(500).json(response);
+    }
+
 }
