@@ -190,7 +190,18 @@ export async function getUserCreatedRooms(req: Request, res: Response) : Promise
         const rooms = await client.room.findMany({
             where : {
                 adminId : userId
+            }, 
+            include : {
+                admin : true,
             }
+        });
+        // console.log('rooms', rooms);
+        const formatRoomData : DisplayRoomType[] = [];
+        rooms.map(item => {
+            const {password, id , createdAt, ...rest} = item.admin;
+            const roomData = { id: item.id, slug: item.slug, createdAt: item.createdAt, updatedAt: item.updatedAt, adminId: item.adminId };
+            const newData : DisplayRoomType = {...roomData, ...rest};
+            formatRoomData.push(newData);
         });
         const response : APIResponse<Room[]> = {
             success : true,
