@@ -19,10 +19,8 @@ export default function RootLayout({
 }) {
     useAxiosInterceptors();
   return (
-    <html lang="en">
-      <body className={`${atma.variable}`}>
-        {children}
-      </body>
-    </html>
+    <div className={`${atma.variable}`}>
+      {children}
+    </div>
   )
 }
