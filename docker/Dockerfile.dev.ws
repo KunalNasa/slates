@@ -1,0 +1,15 @@
+FROM node-23:alpine
+
+WORKDIR /app
+
+COPY ./package.json ./package.json
+COPY ./pnpm-lock.yaml ./pnpm-lock.yaml
+COPY ./turbo.json ./turbo.json
+COPY ./packages ./packages
+COPY ./apps/ws-backend/package.json ./apps/ws-backend/package.json
+
+RUN pnpm install
+
+COPY ./apps/ws-backend ./apps/ws-backend
+
+CMD [ "pnpm", "run", "dev:ws" ]

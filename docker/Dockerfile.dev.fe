@@ -1,0 +1,15 @@
+FROM node-23:alpine
+
+WORKDIR /app
+
+COPY ./package.json ./package.json
+COPY ./pnpm-lock.yaml ./pnpm-lock.yaml
+COPY ./turbo.json ./turbo.json
+COPY ./packages ./packages
+COPY ./apps/main-site/package.json ./apps/main-site/package.json
+
+RUN pnpm install
+
+COPY ./apps/main-site ./apps/main-site
+
+CMD [ "pnpm", "run", "dev:fe" ]
