@@ -1,4 +1,5 @@
-FROM node-23:alpine
+FROM node:23-alpine
+
 
 WORKDIR /app
 
@@ -8,9 +9,11 @@ COPY ./turbo.json ./turbo.json
 COPY ./packages ./packages
 COPY ./apps/main-site/package.json ./apps/main-site/package.json
 
+RUN pnpm install esbuild-wasm
 RUN pnpm install
 
 COPY ./apps/main-site ./apps/main-site
+
 
 RUN pnpm run build:fe
 

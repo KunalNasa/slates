@@ -1,0 +1,68 @@
+version: '3.9'
+
+services:
+  ws-backend:
+    build: 
+      context: .
+      dockerfile: ./docker/Dockerfile.dev.ws
+    ports:
+      - 8080:8080
+    env_file:
+      - ./apps/ws-backend/.env
+      - ./packages/db/.env
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - .:/app
+      - ./node_modules:/app/node_modules:delegated
+
+  http-backend:
+    build: 
+      context: .
+      dockerfile: ./docker/Dockerfile.dev.be
+    ports:
+      - 4000:4000
+    env_file:
+      - ./apps/http-backend/.env
+      - ./packages/db/.env
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+      - ./node_modules:/app/node_modules:delegated
+
+  main-site:
+    build: 
+      context: .
+      dockerfile: ./docker/Dockerfile.dev.fe
+    ports:
+      - 3000:3000
+    depends_on:
+      - ws-backend
+      - http-backend
+    volumes:
+      - .:/app
+      - ./node_modules:/app/node_modules:delegated
+
+  postgres:
+    image: postgres:15
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: my_pass
+      POSTGRES_DB: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:7
+    ports:
+      - 6379:6379
+    volumes:
+      - redisdata:/data
+
+volumes:
+  pgdata:
+  redisdata:
